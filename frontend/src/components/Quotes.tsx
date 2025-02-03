@@ -8,7 +8,7 @@ export const Quotes = () => {
   const [quotes, setQuotes] = useState([]);
   const fetchQuotes = async () => {
     try {
-      const response = await api.get("/quotes");
+      const response = await api.get("/");
       setQuotes(response.data.quotes);
     } catch (error) {
       console.error("Error fetching quotes:", error);

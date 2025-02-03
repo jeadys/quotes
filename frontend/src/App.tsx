@@ -1,15 +1,19 @@
 import "./App.css";
-import { Quotes } from "./components/Quotes";
+import { Canvas } from "@react-three/fiber";
+import Experience from "./components/Experience.tsx";
 
 function App() {
   return (
-    <div className="App">
-      <header>
-        <main>
-          <Quotes />
-        </main>
-      </header>
-    </div>
+    <Canvas
+      camera={{
+        fov: 45,
+        near: 0.1,
+        far: 200,
+        position: [4, 15, 20],
+      }}
+    >
+      <Experience />
+    </Canvas>
   );
 }
 

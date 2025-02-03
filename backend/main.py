@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import requests
 
 
 class Quote(BaseModel):
@@ -34,6 +35,18 @@ memory_db = [Quote(id=1, quote="cool", author="yassin"), Quote(id=2, quote="wow"
 @app.get("/quotes", response_model=Quotes)
 def get_quotes():
     return Quotes(quotes=memory_db)
+
+
+
+
+@app.get("/")
+def get_quotes():
+    response = requests.get("https://dummyjson.com/quotes/random")
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": "Failed to fetch data from the API"}
 
 
 if __name__ == "__main__":
