@@ -41,7 +41,7 @@ def get_quotes():
 
 @app.get("/")
 def get_quotes():
-    response = requests.get("https://dummyjson.com/quotes")
+    response = requests.get("https://dummyjson.com/quotes/random")
 
     if response.status_code == 200:
         return response.json()
