@@ -31,16 +31,7 @@ app.add_middleware(
 )
 
 
-memory_db = [Quote(id=1, quote="cool", author="yassin"), Quote(id=2, quote="wow", author="yassin")]
-
-@app.get("/quotes", response_model=Quotes)
-def get_quotes():
-    return Quotes(quotes=memory_db)
-
-
-
-
-@app.get("/")
+@app.get("/", response_model=Quote)
 def get_quotes():
     response = requests.get("https://dummyjson.com/quotes/random")
 
