@@ -3,25 +3,31 @@ import {
   Center,
   Text3D,
   OrbitControls,
+  Float,
+  Bounds,
 } from "@react-three/drei";
-import { Perf } from "r3f-perf";
+import { lineBreakString } from "../utils.ts";
+import { SelectToZoom } from "../components/SelectToZoom.tsx";
+
 import { useEffect, useState } from "react";
 
 import * as THREE from "three";
 import api from "../api.ts";
 
-const material = new THREE.MeshMatcapMaterial();
-
-const lineBreakString = (quote: string, start: number, end: number): string => {
-  const regex = new RegExp(`(\\S+\\s*){${start},${end}}`, "g");
-  return quote.replace(regex, "$&\n");
-};
+import { Stars } from "@react-three/drei";
 
 export default function Experience() {
   const [matcapTexture] = useMatcapTexture("167E76_36D6D2_23B2AC_27C1BE", 256);
+  const material = new THREE.MeshMatcapMaterial();
+
+  matcapTexture.colorSpace = THREE.SRGBColorSpace;
+  matcapTexture.needsUpdate = true;
+
+  material.matcap = matcapTexture;
+  material.needsUpdate = true;
 
   const [quote, setQuote] = useState<string>("");
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -37,39 +43,49 @@ export default function Experience() {
     fetchQuote();
   }, []);
 
-  useEffect(() => {
-    if (!isLoaded) return;
-
-    matcapTexture.colorSpace = THREE.SRGBColorSpace;
-    matcapTexture.needsUpdate = true;
-
-    material.matcap = matcapTexture;
-    material.needsUpdate = true;
-  }, [isLoaded]);
-
   if (!isLoaded) return null;
 
   return (
     <>
-      <Perf position="top-left" />
       <OrbitControls makeDefault />
 
       <Center>
-        <Text3D
-          material={material}
-          font="./fonts/helvetiker_regular.typeface.json"
-          size={0.75}
-          height={0.2}
-          curveSegments={12}
-          bevelEnabled
-          bevelThickness={0.02}
-          bevelSize={0.02}
-          bevelOffset={0}
-          bevelSegments={5}
+        <Float
+          speed={1}
+          rotationIntensity={2}
+          floatIntensity={2}
+          floatingRange={[1, 2]}
         >
-          {lineBreakString(quote, 1, 5)}
-        </Text3D>
+          <Bounds fit clip observe margin={1.2}>
+            <SelectToZoom>
+              <Text3D
+                material={material}
+                font="./fonts/helvetiker_regular.typeface.json"
+                size={0.75}
+                height={0.2}
+                curveSegments={6}
+                bevelEnabled
+                bevelThickness={0.02}
+                bevelSize={0.02}
+                bevelOffset={0}
+                bevelSegments={3}
+              >
+                {lineBreakString(quote, 1, 5)}
+              </Text3D>
+            </SelectToZoom>
+          </Bounds>
+        </Float>
       </Center>
+
+      <Stars
+        radius={10}
+        depth={100}
+        count={1000}
+        factor={4}
+        saturation={0}
+        fade
+        speed={1}
+      />
     </>
   );
 }
