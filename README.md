@@ -8,6 +8,40 @@ you like, impress us! In general try to approach this assignment as a production
 (within reason).
 
 
-<a href="https://quotes-xvnz.onrender.com/" target="_blank">web service</a>
+## Demo
+[Website](https://kabisa-quotes.onrender.com/)
 
-<a href="https://kabisa-quotes.onrender.com/" target="_blank">website</a>
+[Webservice](https://quotes-xvnz.onrender.com/)
+
+## Setup
+
+Installation
+
+```bash
+  git clone https://github.com/jeadys/quotes
+```
+
+```bash
+  cd quotes/frontend
+  copy .env-example .env
+  npm install
+```
+
+```bash
+  cd quotes/backend
+  python -m venv .venv
+  .venv\Scripts\Activate
+  pip install -r requirements.txt
+```
+
+Launch
+
+```bash
+  cd quotes/frontend
+  npm run dev
+```
+
+```bash
+  cd quotes/backend
+  python main.py
+```
