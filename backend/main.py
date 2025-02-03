@@ -18,7 +18,8 @@ class Quotes(BaseModel):
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://kabisa-quotes.onrender.com"
 ]
 
 app.add_middleware(
