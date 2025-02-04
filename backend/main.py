@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import requests
@@ -9,10 +9,6 @@ class Quote(BaseModel):
     id: int
     quote: str
     author: str
-
-
-class Quotes(BaseModel):
-    quotes: list[Quote]
 
 
 app = FastAPI()
@@ -32,13 +28,14 @@ app.add_middleware(
 
 
 @app.get("/", response_model=Quote)
-def get_quotes():
+def get_quotes() -> Quote:
     response = requests.get("https://dummyjson.com/quotes/random")
-
+    
     if response.status_code == 200:
-        return response.json()
-    else:
-        return {"error": "Failed to fetch data from the API"}
+        data = response.json()
+        return Quote(id=data["id"], quote=data["quote"], author=data["author"])
+    
+    raise HTTPException(status_code=response.status_code, detail="Failed to fetch data from the API")
 
 
 if __name__ == "__main__":

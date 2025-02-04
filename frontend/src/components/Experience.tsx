@@ -1,20 +1,25 @@
 import {
-  useMatcapTexture,
-  Center,
-  Text3D,
-  OrbitControls,
-  Float,
   Bounds,
+  Center,
+  Float,
+  OrbitControls,
+  Stars,
+  Text3D,
+  useMatcapTexture,
 } from "@react-three/drei";
-import { lineBreakString } from "../utils.ts";
-import { SelectToZoom } from "../components/SelectToZoom.tsx";
-
+import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
-
 import * as THREE from "three";
+
+import { SelectToZoom } from "../components/SelectToZoom.tsx";
+import { lineBreakString } from "../utils.ts";
 import api from "../api.ts";
 
-import { Stars } from "@react-three/drei";
+type Quote = {
+  id: number;
+  quote: string;
+  author: string;
+};
 
 export default function Experience() {
   const [matcapTexture] = useMatcapTexture("167E76_36D6D2_23B2AC_27C1BE", 256);
@@ -26,14 +31,14 @@ export default function Experience() {
   material.matcap = matcapTexture;
   material.needsUpdate = true;
 
-  const [quote, setQuote] = useState<string>("");
+  const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchQuote = async () => {
       try {
-        const response = await api.get("/");
-        setQuote(response.data.quote);
+        const response: AxiosResponse<Quote> = await api.get("/");
+        setQuote(response.data);
         setIsLoaded(true);
       } catch (error) {
         console.error("Error fetching quote:", error);
@@ -70,7 +75,9 @@ export default function Experience() {
                 bevelOffset={0}
                 bevelSegments={3}
               >
-                {lineBreakString(quote, 1, 5)}
+                {quote
+                  ? `${lineBreakString(quote.quote, 1, 5)}\n- ${quote.author}`
+                  : "Hello World!"}
               </Text3D>
             </SelectToZoom>
           </Bounds>
